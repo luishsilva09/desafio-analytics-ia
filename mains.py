@@ -17,3 +17,16 @@ headers = {
 url_api = "https://api.coingecko.com/api/v3/"
 
 
+def formatar_cores(valor=0):
+    """Mudar cor dos texto"""
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+
+    color = "\033[0m"
+    if valor < 0:
+        color = RED
+    elif valor > 0:
+        color = GREEN
+    return color
+
+
