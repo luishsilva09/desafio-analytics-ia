@@ -30,3 +30,33 @@ def formatar_cores(valor=0):
     return color
 
 
+def buscar_top_buscados():
+    """Buscar as tops moedas mais buscadas pelos usuarios"""
+    dados = {}
+    # Buscar dados e transformar para json
+    response = json.loads(requests.get(
+        url_api + 'search/trending', headers=headers).text)
+
+    # Formatar dados
+    for dado in response['coins']:
+        porcentagem = \
+            dado['item']['data']['price_change_percentage_24h']['usd']
+
+        dados[dado['item']['name']] = {
+            'Preço': f"U${dado['item']['data']['price']:.6f}",
+            'Crecimento':
+            f"{formatar_cores(porcentagem)}{porcentagem:.2f}%{formatar_cores()}"
+        }
+
+    df = pd.DataFrame(data=dados).T
+    df_styled = df.style.set_properties(**{'text-align': 'center'})
+
+    # Centralizando os rótulos das colunas
+    df_styled = df_styled.set_table_styles(
+        [{'selector': 'th', 'props': [('text-align', 'center')]}])
+
+    # display(df_styled)
+
+    print(df)
+
+
