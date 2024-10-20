@@ -100,3 +100,36 @@ def historico_bitcoin():
     print(df)
 
 
+def tabela_valores_top():
+    """Comparar valores e crecimento atual entre Bitcoin, Ethereum e Solana"""
+    dados = {}
+    # Buscar dados
+    response = json.loads(requests.get(
+        f"{url_api}coins/markets?vs_currency=usd&ids=bitcoin%2Cethereum%2Csolana",
+        headers=headers).text)
+
+    for valores in response:
+        dados[valores['name']] = {
+            'valor_atual': f"U$ {valores['current_price']}",
+            'maior_valor_24h': f"U$ {valores['high_24h']}",
+            'menor_valor_24h': f"U$ {valores['low_24h']}",
+            'porcentagem mudanca_preco':
+            f"{formatar_cores(valores['price_change_percentage_24h'])}\
+            {valores['price_change_percentage_24h']}%{formatar_cores()}",
+            'valor_mudanca': f"{formatar_cores(valores['price_change_24h'])}\
+                {valores['price_change_24h']:.2f}{formatar_cores()}"
+        }
+    df = pd.DataFrame(data=dados).T
+
+    # Renomear as colunas
+    df.columns = [
+        'Preço Atual',
+        'Maior Preço 24h',
+        'Menor Preço 24h',
+        'Porcentagem de Mudança (%)',
+        'Valor da Mudança'
+    ]
+
+    print(df)
+
+
