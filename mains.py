@@ -60,3 +60,43 @@ def buscar_top_buscados():
     print(df)
 
 
+def historico_bitcoin():
+    """Historico valor Bitcoin 24h"""
+    dados = {
+        'hora': [],
+        'valor': []
+    }
+
+    # Buscar dados
+    response = json.loads(requests.get(
+        f"{url_api}coins/bitcoin/market_chart?vs_currency=usd&days=1",
+        headers=headers).text)
+
+    # Formatar dados
+    for valor in response['prices']:
+        dados['hora'].append(datetime.fromtimestamp(valor[0] / 1000))
+        dados['valor'].append(valor[1])
+
+    # Montar grafico
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    # Adicionar dados ao grafico
+    ax.plot(dados['hora'], dados['valor'],
+            label='Bitcoin')
+
+    # Ajustar eixo x para ter escala de 1h
+    plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+
+    # Deixar mais legivel e adicionar labels
+    plt.gcf().autofmt_xdate()
+    plt.xlabel('Hora')
+    plt.ylabel('Valor U$')
+    plt.title('Valores Bitcoin 24h')
+
+    plt.show()
+    df = pd.DataFrame({'Hora': dados['hora'][::12],
+                       'Valor': dados['valor'][::12]})
+    print(df)
+
+
