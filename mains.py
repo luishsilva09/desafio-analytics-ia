@@ -60,6 +60,16 @@ def buscar_top_buscados():
     print(df)
 
 
+def chamada_busca_historico(dias=None, moeda=None):
+    """Trazer o response do busca historico"""
+
+    response = json.loads(requests.get(
+        f"""{url_api}coins/markets?vs_currency=usd&ids={moeda}&price_change_percentage={dias}""",
+        headers=headers).text)
+
+    return response
+
+
 def historico_bitcoin():
     """Historico valor Bitcoin 24h"""
     dados = {
@@ -133,3 +143,22 @@ def tabela_valores_top():
     print(df)
 
 
+def crecimento_bitcoin():
+    """Valorizacao bitcoin 1d, 7d, 30d, 1 ano"""
+    busca = ['1h', '24h', '7d', '30d', '1y']
+    dados = {}
+    # Buscar dados
+    for qtd in busca:
+        response = chamada_busca_historico(dias=qtd, moeda='bitcoin')
+
+        # Formatar dados
+        valor = response[0][f"price_change_percentage_{qtd}_in_currency"]
+        dados[qtd] = {
+            'porcentagem_crecimento':
+            f"{formatar_cores(valor)}{valor:.2f}%{formatar_cores()}"
+
+        }
+    # Exibir tabela
+    df = pd.DataFrame(data=dados)
+
+    print(df)
