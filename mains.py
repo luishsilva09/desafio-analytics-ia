@@ -162,3 +162,15 @@ def crecimento_bitcoin():
     df = pd.DataFrame(data=dados)
 
     print(df)
+
+print('Criptomoedas mais buscadas')
+buscar_top_buscados()
+
+print('Valores Bitcoin, Ethereum e Solana')
+tabela_valores_top()
+
+print('Crecimento bitcoin')
+crecimento_bitcoin()
+
+print('Historico valor bitcoin 24h')
+historico_bitcoin()
